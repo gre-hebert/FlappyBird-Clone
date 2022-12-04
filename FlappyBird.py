@@ -20,6 +20,10 @@ FONTE_PONTOS = pygame.font.Font('fonts/Grand9K Pixel.ttf', 35)
 FONTE_EXIT = pygame.font.Font('fonts/Grand9K Pixel.ttf', 15)
 jumpsfx = pygame.mixer.Sound('sfx/jump.wav')
 
+# Música de fundo
+pygame.mixer.music.load('music/bgmusic.wav')
+pygame.mixer.music.play(-1)
+
 class Passaro:
     IMGS = IMAGENS_PASSARO
     # animações da rotação
@@ -168,9 +172,9 @@ def desenhar_tela(tela, passaro, canos, chao, pontos):
     passaro.desenhar(tela)
     for cano in canos:
         cano.desenhar(tela)
-    Exit = FONTE_EXIT.render('[ESC] SAIR', 1, (255, 255, 255))
-    Space = FONTE_EXIT.render('[SPACE] FLY', 1, (255, 255, 255))
-    texto = FONTE_PONTOS.render(f'Pontuação: {pontos}', 1, (255, 255, 255))
+    Exit = FONTE_EXIT.render('[ESC] SAIR', 1, (216, 247, 215))
+    Space = FONTE_EXIT.render('[SPACE] FLY', 1, (216, 247, 215))
+    texto = FONTE_PONTOS.render(f'Pontuação: {pontos}', 1, (216, 247, 215))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
     tela.blit(Exit, (0, 0))
     chao.desenhar(tela)
