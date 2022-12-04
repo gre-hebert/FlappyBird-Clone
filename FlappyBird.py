@@ -17,6 +17,7 @@ IMAGENS_PASSARO = [
 pygame.mixer.init()
 pygame.font.init()
 FONTE_PONTOS = pygame.font.Font('fonts/Grand9K Pixel.ttf', 35)
+FONTE_EXIT = pygame.font.Font('fonts/Grand9K Pixel.ttf', 15)
 jumpsfx = pygame.mixer.Sound('sfx/jump.wav')
 
 class Passaro:
@@ -167,10 +168,13 @@ def desenhar_tela(tela, passaro, canos, chao, pontos):
     passaro.desenhar(tela)
     for cano in canos:
         cano.desenhar(tela)
-
+    Exit = FONTE_EXIT.render('[ESC] SAIR', 1, (255, 255, 255))
+    Space = FONTE_EXIT.render('[SPACE] FLY', 1, (255, 255, 255))
     texto = FONTE_PONTOS.render(f'Pontuação: {pontos}', 1, (255, 255, 255))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
+    tela.blit(Exit, (0, 0))
     chao.desenhar(tela)
+    tela.blit(Space, (0, TELA_ALTURA - Space.get_height()))
     pygame.display.update()
 
 
@@ -181,9 +185,11 @@ def main():
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     pontos = 0
     relogio = pygame.time.Clock()
+    relogio_velocidade = 60
+    DESENVOLVEDOR = False
 
     while True:
-        relogio.tick(60)
+        relogio.tick(relogio_velocidade)
 
         # interação com o usuário
         for evento in pygame.event.get():
@@ -193,7 +199,25 @@ def main():
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_SPACE:
                     passaro.pular()
-
+                if evento.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    quit()
+                if DESENVOLVEDOR:
+                    if evento.key == pygame.K_LEFT:
+                        if relogio_velocidade < 11:
+                            relogio_velocidade = 1
+                        else:
+                            relogio_velocidade -= 10
+                    if evento.key == pygame.K_RIGHT:
+                        relogio_velocidade += 10
+                    if evento.key == pygame.K_DOWN:
+                        if relogio_velocidade == 1:
+                            relogio_velocidade = 1
+                        else:
+                            relogio_velocidade -= 1
+                    if evento.key == pygame.K_UP:
+                        relogio_velocidade += 10
+                    
         # mover as coisas
         passaro.mover()
         chao.mover()
