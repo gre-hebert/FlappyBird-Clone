@@ -23,7 +23,7 @@ class Passaro:
     IMGS = IMAGENS_PASSARO
     # animações da rotação
     ROTACAO_MAXIMA = 25
-    VELOCIDADE_ROTACAO = 5
+    VELOCIDADE_ROTACAO = 2
     TEMPO_ANIMACAO = 5
 
     def __init__(self, x, y):
@@ -56,11 +56,11 @@ class Passaro:
         self.y += deslocamento
 
         # o angulo do passaro
-        if deslocamento < 0 or self.y < (self.altura - 1):
+        if deslocamento < 0:
             if self.angulo < self.ROTACAO_MAXIMA:
-                self.angulo = self.ROTACAO_MAXIMA
+                self.angulo += self.VELOCIDADE_ROTACAO*5
         else:
-            if self.angulo > -90:
+            if self.angulo > -60:
                 self.angulo -= self.VELOCIDADE_ROTACAO
 
     def desenhar(self, tela):
@@ -81,7 +81,7 @@ class Passaro:
 
 
         # se o passaro tiver caindo eu não vou bater asa
-        if self.angulo <= -80:
+        if self.angulo <= -10:
             self.imagem = self.IMGS[1]
             self.contagem_imagem = self.TEMPO_ANIMACAO*2
 
@@ -96,8 +96,8 @@ class Passaro:
 
 
 class Cano:
-    DISTANCIA = 200
-    VELOCIDADE = 2.5
+    DISTANCIA = 210
+    VELOCIDADE = 3.5
 
     def __init__(self, x):
         self.x = x
@@ -112,7 +112,7 @@ class Cano:
     def definir_altura(self):
         self.altura = random.randrange(50, 450)
         self.pos_topo = self.altura - self.CANO_TOPO.get_height()
-        self.pos_base = self.altura + (self.DISTANCIA + random.randint(-10,10))
+        self.pos_base = self.altura + self.DISTANCIA
 
     def mover(self):
         self.x -= self.VELOCIDADE
@@ -139,7 +139,7 @@ class Cano:
 
 
 class Chao:
-    VELOCIDADE = 2.5
+    VELOCIDADE = 3.5
     LARGURA = IMAGEM_CHAO.get_width()
     IMAGEM = IMAGEM_CHAO
 
