@@ -16,13 +16,14 @@ IMAGENS_PASSARO = [
 
 pygame.font.init()
 FONTE_PONTOS = pygame.font.SysFont('arial', 50)
-
+pygame.mixer.init()
+jumpsfx = pygame.mixer.Sound('sfx/jump.wav')
 
 class Passaro:
     IMGS = IMAGENS_PASSARO
     # animações da rotação
     ROTACAO_MAXIMA = 25
-    VELOCIDADE_ROTACAO = 20
+    VELOCIDADE_ROTACAO = 5
     TEMPO_ANIMACAO = 5
 
     def __init__(self, x, y):
@@ -36,25 +37,26 @@ class Passaro:
         self.imagem = self.IMGS[0]
 
     def pular(self):
-        self.velocidade = -10.5
-        self.tempo = 0
+        self.velocidade = -5
+        self.tempo = 1
         self.altura = self.y
+        jumpsfx.play()
 
     def mover(self):
         # calcular o deslocamento
-        self.tempo += 1
-        deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
+        self.tempo += .35
+        deslocamento = .75 * (self.tempo**2) + self.velocidade * self.tempo
 
         # restringir o deslocamento
-        if deslocamento > 16:
-            deslocamento = 16
+        if deslocamento > 7.5:
+            deslocamento = 7.5
         elif deslocamento < 0:
-            deslocamento -= 2
+            deslocamento -= 1
 
         self.y += deslocamento
 
         # o angulo do passaro
-        if deslocamento < 0 or self.y < (self.altura + 50):
+        if deslocamento < 0 or self.y < (self.altura - 1):
             if self.angulo < self.ROTACAO_MAXIMA:
                 self.angulo = self.ROTACAO_MAXIMA
         else:
@@ -95,7 +97,7 @@ class Passaro:
 
 class Cano:
     DISTANCIA = 200
-    VELOCIDADE = 5
+    VELOCIDADE = 2.5
 
     def __init__(self, x):
         self.x = x
@@ -110,7 +112,7 @@ class Cano:
     def definir_altura(self):
         self.altura = random.randrange(50, 450)
         self.pos_topo = self.altura - self.CANO_TOPO.get_height()
-        self.pos_base = self.altura + self.DISTANCIA
+        self.pos_base = self.altura + (self.DISTANCIA + random.randint(-10,10))
 
     def mover(self):
         self.x -= self.VELOCIDADE
@@ -137,7 +139,7 @@ class Cano:
 
 
 class Chao:
-    VELOCIDADE = 5
+    VELOCIDADE = 2.5
     LARGURA = IMAGEM_CHAO.get_width()
     IMAGEM = IMAGEM_CHAO
 
@@ -167,7 +169,7 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
     for cano in canos:
         cano.desenhar(tela)
 
-    texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
+    texto = FONTE_PONTOS.render(f'Pontuação: {pontos}', 1, (255, 255, 255))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
     chao.desenhar(tela)
     pygame.display.update()
@@ -181,9 +183,8 @@ def main():
     pontos = 0
     relogio = pygame.time.Clock()
 
-    rodando = True
-    while rodando:
-        relogio.tick(30)
+    while True:
+        relogio.tick(60)
 
         # interação com o usuário
         for evento in pygame.event.get():
